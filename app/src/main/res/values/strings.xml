@@ -1,0 +1,88 @@
+<resources>
+    <string name="app_name">LoginPage</string>
+
+    <!-- Perfume Names (Men) -->
+    <string name="perfume_dior_sauvage">Dior Sauvage</string>
+    <string name="perfume_creed">Creed</string>
+    <string name="perfume_spice_bomb">Spice Bomb</string>
+    <string name="perfume_versace">Versace</string>
+    <string name="perfume_prada">Prada</string>
+    <string name="perfume_tom_ford">Tom Ford</string>
+    <string name="perfume_eternity">Eternity</string>
+    <string name="perfume_tommy">Tommy</string>
+    <string name="perfume_gucci">Gucci</string>
+    <string name="perfume_hugo_boss">Hugo Boss</string>
+    <string name="perfume_yves">YVES</string>
+    <string name="perfume_jean_paul">Jean Paul</string>
+    <string name="perfume_bella_vita">Bella Vita</string>
+    <string name="perfume_chanel">Chanel</string>
+    <string name="perfume_azzaro">Azzaro</string>
+
+    <!-- Descriptions (Men - Renamed to Match Perfumes) -->
+    <string name="desc_dior_sauvage">A bold and masculine scent with hints of bergamot and ambroxan.</string>
+    <string name="desc_creed">A luxurious blend of citrus and woody notes.</string>
+    <string name="desc_spice_bomb">An explosion of spices and leather, perfect for a confident man.</string>
+    <string name="desc_versace">Modern and fresh with Mediterranean citrus and warm musk.</string>
+    <string name="desc_prada">Elegant, clean, and refined with powdery notes.</string>
+    <string name="desc_tom_ford">Sophisticated and powerful with dark, smoky undertones.</string>
+    <string name="desc_eternity">Timeless and romantic with a blend of green and floral notes.</string>
+    <string name="desc_tommy">Youthful and energetic, fresh with mint and citrus.</string>
+    <string name="desc_gucci">Stylish and intense with herbal and woody accords.</string>
+    <string name="desc_hugo_boss">Clean and classic with crisp apple and spicy cinnamon.</string>
+    <string name="desc_yves">Sharp and distinctive with fresh aromatic herbs.</string>
+    <string name="desc_jean_paul">Playful and seductive with vanilla and lavender fusion.</string>
+    <string name="desc_bella_vita">Bright and uplifting with fruity top notes and creamy base.</string>
+    <string name="desc_chanel">Timeless French elegance with aldehydes and warm florals.</string>
+    <string name="desc_azzaro">Fresh, woody, and aromatic, ideal for everyday charm.</string>
+
+    <!-- Perfume Names (Women) -->
+    <string name="perfume_ysl">YSL</string>
+    <string name="perfume_daisy">Daisy</string>
+    <string name="perfume_chance_chanel">Chance Chanel</string>
+    <string name="perfume_flower_bomb">Flower Bomb</string>
+    <string name="perfume_prada_milano">Prada Milano</string>
+    <string name="perfume_poison_dior">Poison Dior</string>
+    <string name="perfume_euphoria">Euphoria</string>
+    <string name="perfume_billie_eilish">Billie Eilish</string>
+    <string name="perfume_black_orchid">Black Orchid</string>
+    <string name="perfume_phlur">PHLUR</string>
+    <string name="perfume_burberry">Burberry</string>
+    <string name="perfume_adore">Adore</string>
+    <string name="perfume_byredo">Byredo</string>
+    <string name="perfume_gucci_flora">Gucci Flora</string>
+    <string name="perfume_good_girl">Good Girl</string>
+    <string name="perfume_chanel_paris">Chanel Paris</string>
+
+    <!-- Descriptions (Women - Renamed to Match Perfumes) -->
+    <string name="desc_ysl">Bold yet feminine with floral and woody accords.</string>
+    <string name="desc_daisy">Playful and sweet with wild berries and jasmine.</string>
+    <string name="desc_chance_chanel">Chic and whimsical with citrus and patchouli.</string>
+    <string name="desc_flower_bomb">Explosive floral bouquet with warm vanilla undertones.</string>
+    <string name="desc_prada_milano">Luxurious and refined with white florals and musk.</string>
+    <string name="desc_poison_dior">Dark and seductive with spicy and fruity notes.</string>
+    <string name="desc_euphoria">Mysterious and exotic with orchid and mahogany.</string>
+    <string name="desc_billie_eilish">Warm, sweet, and cozy with notes of sugar and musk.</string>
+    <string name="desc_black_orchid">Opulent and sensual with black truffle and plum.</string>
+    <string name="desc_phlur">Clean, modern scent with minimalist sophistication.</string>
+    <string name="desc_burberry">British charm with green apple and jasmine layers.</string>
+    <string name="desc_adore">Floral and radiant with ylang-ylang and rose.</string>
+    <string name="desc_byredo">Unique and niche with artistic blends of woods and citrus.</string>
+    <string name="desc_gucci_flora">Romantic and vibrant with peony and citrus zest.</string>
+    <string name="desc_good_girl">Duality of women – sweet jasmine and bold cocoa.</string>
+    <string name="desc_chanel_paris">Parisian grace with iris, rose, and powdery notes.</string>
+
+    <string name="homepage_description">
+        Discover exquisite fragrances for both men and women. At Arum Aroma, we craft timeless scents with exceptional quality and elegance.
+    </string>
+
+    <!-- Banner Titles -->
+    <string name="banner_title_1">Get Special Offer\nUp to 40%</string>
+    <string name="banner_subtitle_1">All Services Available | T&amp;C Applied</string>
+
+    <string name="banner_title_2">Enjoy 20% Discount</string>
+    <string name="banner_subtitle_2">Limited stock available</string>
+
+    <string name="banner_title_3">Save 10% Today</string>
+    <string name="banner_subtitle_3">Exclusively on premium range</string>
+
+</resources>

@@ -34,7 +34,7 @@ import com.example.loginpage.R
 import com.example.loginpage.data.DataSource
 import com.example.loginpage.data.FavoriteManager
 import com.example.loginpage.model.Perfume
-import com.example.loginpage.model.Banner
+
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.navigation.compose.currentBackStackEntryAsState

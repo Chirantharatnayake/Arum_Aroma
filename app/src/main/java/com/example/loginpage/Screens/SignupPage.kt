@@ -3,12 +3,15 @@ package com.example.loginpage.Screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +33,8 @@ fun SignUpPage(onLoginClick: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    val scrollState = rememberScrollState()
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.perfumebackground),
@@ -49,7 +54,8 @@ fun SignUpPage(onLoginClick: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(24.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(40.dp))
@@ -114,12 +120,12 @@ fun SignUpPage(onLoginClick: () -> Unit) {
 
             Button(
                 onClick = { onLoginClick() },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF57C00)),
+                colors = ButtonDefaults.buttonColors(containerColor = colorScheme.primary),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
             ) {
-                Text(text = "Sign Up", fontSize = 18.sp)
+                Text(text = "Sign Up", fontSize = 18.sp, color = colorScheme.onPrimary)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -127,6 +133,8 @@ fun SignUpPage(onLoginClick: () -> Unit) {
             TextButton(onClick = onLoginClick) {
                 Text("Already have an account? Log In", color = Color.White)
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

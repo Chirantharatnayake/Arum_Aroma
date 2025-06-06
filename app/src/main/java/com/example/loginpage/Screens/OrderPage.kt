@@ -46,7 +46,7 @@ fun OrderPage(navController: NavController) {
         stringResource(it.nameResId).contains(searchQuery, ignoreCase = true)
     }
 
-    val cardColor = if (selectedGender == "Men") Color(0xFFE3F2FD) else Color(0xFFFCE4EC)
+    val cardColor = if (selectedGender == "Men") MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
     val banners = remember { dataSource.loadBanners() }
     val pagerState = rememberPagerState(pageCount = { banners.size })
 
@@ -67,7 +67,7 @@ fun OrderPage(navController: NavController) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFEDEDED))
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(bottom = 80.dp, start = 16.dp, end = 16.dp)
                 .padding(top = topInsetPadding + 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -87,7 +87,7 @@ fun OrderPage(navController: NavController) {
 
                     Card(
                         shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF1E6)),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
@@ -100,24 +100,24 @@ fun OrderPage(navController: NavController) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("Limited time!", fontSize = 12.sp, color = Color.Red)
-                                Text(title, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
-                                Text(subtitle, fontSize = 12.sp, color = Color.DarkGray)
+                                Text("Limited time!", fontSize = 12.sp, color = MaterialTheme.colorScheme.error)
+                                Text(title, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+                                Text(subtitle, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Spacer(modifier = Modifier.height(8.dp))
 
                                 if (page == 0) {
                                     Text(
                                         text = "Applied",
-                                        color = Color.Gray,
+                                        color = MaterialTheme.colorScheme.outline,
                                         fontWeight = FontWeight.SemiBold,
                                         fontSize = 14.sp
                                     )
                                 } else {
                                     Button(
-                                        onClick = {},
-                                        colors = ButtonDefaults.buttonColors(Color.Red)
+                                        onClick = { navController.navigate("detail/${banner.perfumeId}") },
+                                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                                     ) {
-                                        Text("Claim", color = Color.White)
+                                        Text("Claim", color = MaterialTheme.colorScheme.onPrimary)
                                     }
                                 }
                             }
@@ -162,18 +162,18 @@ fun SearchBar(value: String, onValueChange: (String) -> Unit) {
         onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFF5F5F5), RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
             .padding(12.dp),
         decorationBox = { innerTextField ->
             Row(
                 Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.Gray)
+                Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.outline)
                 Spacer(modifier = Modifier.width(8.dp))
                 Box {
                     if (value.isBlank()) {
-                        Text("Search...", color = Color.Gray, fontSize = 14.sp)
+                        Text("Search...", color = MaterialTheme.colorScheme.outline, fontSize = 14.sp)
                     }
                     innerTextField()
                 }
@@ -194,11 +194,11 @@ fun GenderToggle(selectedGender: String, onGenderChange: (String) -> Unit) {
             Button(
                 onClick = { onGenderChange(gender) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedGender == gender) Color(0xFFF57C00) else Color.LightGray
+                    containerColor = if (selectedGender == gender) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surfaceDim
                 ),
                 modifier = Modifier.padding(horizontal = 6.dp)
             ) {
-                Text("$gender's", color = Color.White)
+                Text("$gender's", color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }
@@ -236,13 +236,13 @@ fun PerfumeCard(perfume: Perfume, cardColor: Color, navController: NavController
                     name,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp,
-                    color = Color(0xFF212121)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Rs. ${perfume.price}",
                     fontSize = 16.sp,
-                    color = Color(0xFF424242),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -253,7 +253,7 @@ fun PerfumeCard(perfume: Perfume, cardColor: Color, navController: NavController
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                     contentDescription = "Favorite",
-                    tint = if (isFavorite) Color.Red else Color.Gray
+                    tint = if (isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
                 )
             }
         }

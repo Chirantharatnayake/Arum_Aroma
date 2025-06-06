@@ -3,11 +3,14 @@ package com.example.loginpage.Screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +34,9 @@ fun LoginPage(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    val scrollState = rememberScrollState()
+    val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -49,14 +55,15 @@ fun LoginPage(
                 .background(Color.Black.copy(alpha = 0.6f))
         )
 
-        // Main Login Content
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(horizontal = 24.dp)
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(statusBarHeight + 32.dp))
+
             // Logo
             Image(
                 painter = painterResource(id = R.drawable.whitelogo),
@@ -143,12 +150,12 @@ fun LoginPage(
                     // You can add form validation here
                     onLoginSuccess()
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF57C00)),
+                colors = ButtonDefaults.buttonColors(containerColor = colorScheme.primary),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
             ) {
-                Text(text = "Login", fontSize = 18.sp)
+                Text(text = "Login", fontSize = 18.sp, color = colorScheme.onPrimary)
             }
 
             Spacer(modifier = Modifier.height(16.dp))

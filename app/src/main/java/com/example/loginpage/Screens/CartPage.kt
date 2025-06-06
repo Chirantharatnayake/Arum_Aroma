@@ -7,16 +7,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -26,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.ViewCompat
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.loginpage.data.CartManager
 import com.example.loginpage.model.Perfume
 
@@ -47,13 +43,15 @@ fun CartScreen(navController: NavController) {
         ViewCompat.getRootWindowInsets(view)?.systemGestureInsets?.top?.toDp() ?: 24.dp
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.surface)) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = topPadding + 12.dp, start = 16.dp, end = 16.dp)
         ) {
-            // ✅ Top Bar aligned with Favourites page
+            // Top Bar
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -66,7 +64,7 @@ fun CartScreen(navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color.Black,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(28.dp)
                         )
                     }
@@ -77,14 +75,14 @@ fun CartScreen(navController: NavController) {
                         text = "Your Cart",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
                 Icon(
                     imageVector = Icons.Default.ShoppingCart,
                     contentDescription = "Cart Icon",
-                    tint = Color(0xFF2E7D32),
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -98,7 +96,7 @@ fun CartScreen(navController: NavController) {
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Your cart is empty", fontSize = 18.sp, color = Color.Gray)
+                    Text("Your cart is empty", fontSize = 18.sp, color = MaterialTheme.colorScheme.outline)
                 }
             } else {
                 LazyColumn(modifier = Modifier.weight(1f)) {
@@ -126,11 +124,12 @@ fun CartScreen(navController: NavController) {
                                     Text(
                                         text = stringResource(id = item.nameResId),
                                         fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
                                     Text(
                                         text = "Price: Rs. ${item.price}",
-                                        color = Color(0xFF1B5E20),
+                                        color = MaterialTheme.colorScheme.tertiary,
                                         fontSize = 16.sp
                                     )
 
@@ -168,7 +167,7 @@ fun CartScreen(navController: NavController) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
                                         contentDescription = "Remove from Cart",
-                                        tint = Color.Red
+                                        tint = MaterialTheme.colorScheme.error
                                     )
                                 }
                             }
@@ -182,7 +181,7 @@ fun CartScreen(navController: NavController) {
                     text = "Total: Rs. $total",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2E7D32),
+                    color = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(bottom = 10.dp)
@@ -190,15 +189,15 @@ fun CartScreen(navController: NavController) {
 
                 Button(
                     onClick = {
-                        // Payment logic here
+                        // Payment logic
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Pay Now", color = Color.White, fontSize = 18.sp)
+                    Text("Pay Now", color = MaterialTheme.colorScheme.onTertiary, fontSize = 18.sp)
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -206,7 +205,9 @@ fun CartScreen(navController: NavController) {
 
             BottomNavigationBar(
                 navController = navController,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth()
             )
         }
     }

@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,11 +33,14 @@ import com.example.loginpage.R
 import com.example.loginpage.data.DataSource
 import com.example.loginpage.data.FavoriteManager
 import com.example.loginpage.model.Perfume
-
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.delay
+import androidx.compose.foundation.isSystemInDarkTheme
+
 
 val StylishFont = FontFamily.Default
 
@@ -61,7 +63,7 @@ fun HomePage(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(Color.White, Color(0xFFFDF1E7))))
+            .background(Brush.verticalGradient(listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surfaceVariant)))
     ) {
         Column(
             modifier = Modifier
@@ -75,13 +77,16 @@ fun HomePage(navController: NavController) {
             ) {
                 Spacer(modifier = Modifier.height(12.dp))
 
+                val isDarkTheme = isSystemInDarkTheme()
+                val logoRes = if (isDarkTheme) R.drawable.whitelogo else R.drawable.blacklogo
+
                 Image(
-                    painter = painterResource(id = R.drawable.blacklogo),
+                    painter = painterResource(id = logoRes),
                     contentDescription = "Arum Aroma Logo",
                     modifier = Modifier.size(100.dp)
                 )
-                Text("Arum Aroma", fontSize = 36.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-                Text("Essence of Elegance", fontSize = 14.sp, color = Color.DarkGray)
+                Text("Arum Aroma", fontSize = 36.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+                Text("Essence of Elegance", fontSize = 14.sp, color = MaterialTheme.colorScheme.outline)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -90,17 +95,17 @@ fun HomePage(navController: NavController) {
                     onValueChange = {},
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFF5F5F5), RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
                         .padding(12.dp),
                     decorationBox = { innerTextField ->
                         Row(
                             Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.Gray)
+                            Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.outline)
                             Spacer(modifier = Modifier.width(8.dp))
                             Box {
-                                Text("Search...", color = Color.Gray, fontSize = 14.sp)
+                                Text("Search...", color = MaterialTheme.colorScheme.outline, fontSize = 14.sp)
                                 innerTextField()
                             }
                         }
@@ -123,7 +128,7 @@ fun HomePage(navController: NavController) {
 
                     Card(
                         shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF1E6)),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
@@ -136,12 +141,17 @@ fun HomePage(navController: NavController) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("Limited time!", fontSize = 12.sp, color = Color.Red)
+                                Text("Limited time!", fontSize = 12.sp, color = MaterialTheme.colorScheme.error)
                                 Text(title, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
-                                Text(subtitle, fontSize = 12.sp, color = Color.DarkGray)
+                                Text(subtitle, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Spacer(modifier = Modifier.height(8.dp))
-                                Button(onClick = {}, colors = ButtonDefaults.buttonColors(Color.Red)) {
-                                    Text("Claim", color = Color.White)
+                                Button(
+                                    onClick = {
+                                        navController.navigate("detail/${banner.perfumeId}")
+                                    },
+                                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                                ) {
+                                    Text("Claim", color = MaterialTheme.colorScheme.onPrimary)
                                 }
                             }
                             Spacer(modifier = Modifier.width(12.dp))
@@ -159,7 +169,7 @@ fun HomePage(navController: NavController) {
                 Text(
                     text = stringResource(id = R.string.homepage_description),
                     fontSize = 16.sp,
-                    color = Color.DarkGray
+                    color = MaterialTheme.colorScheme.outline
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
@@ -181,14 +191,14 @@ fun HomePage(navController: NavController) {
                 Spacer(modifier = Modifier.height(30.dp))
                 Button(
                     onClick = { navController.navigate("order") },
-                    colors = ButtonDefaults.buttonColors(Color(0xFFF57C00)),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(55.dp)
                 ) {
                     Icon(Icons.Default.ShoppingCart, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Shop Now", fontSize = 18.sp)
+                    Text("Shop Now", fontSize = 18.sp, color = MaterialTheme.colorScheme.onTertiary)
                 }
             }
         }
@@ -198,14 +208,11 @@ fun HomePage(navController: NavController) {
 }
 
 @Composable
-fun PerfumeCardWithFavorite(
-    perfume: Perfume,
-    navController: NavController
-) {
+fun PerfumeCardWithFavorite(perfume: Perfume, navController: NavController) {
     val name = stringResource(id = perfume.nameResId)
     val isFav = remember { mutableStateOf(FavoriteManager.isFavorite(perfume.nameResId)) }
 
-    val favColor by animateColorAsState(if (isFav.value) Color.Red else Color.Gray)
+    val favColor by animateColorAsState(if (isFav.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline)
     val scale by animateFloatAsState(if (isFav.value) 1.2f else 1f)
 
     Card(
@@ -215,7 +222,7 @@ fun PerfumeCardWithFavorite(
             .shadow(8.dp, RoundedCornerShape(12.dp))
             .clickable { navController.navigate("detail/${perfume.id}") },
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -233,8 +240,31 @@ fun PerfumeCardWithFavorite(
                         .padding(bottom = 10.dp),
                     contentScale = ContentScale.Crop
                 )
-                Text(name, color = Color.Black, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
-                Text("Rs. ${perfume.price}", color = Color(0xFF444444), fontSize = 14.sp)
+                Text(name, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+
+                if (perfume.originalPrice != null && perfume.originalPrice > perfume.price) {
+                    Text(
+                        text = "Rs. ${perfume.originalPrice}",
+                        color = MaterialTheme.colorScheme.outline,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Normal,
+                        style = androidx.compose.ui.text.TextStyle(textDecoration = TextDecoration.LineThrough)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Rs. ${perfume.price}",
+                        color = MaterialTheme.colorScheme.error,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                } else {
+                    Text(
+                        "Rs. ${perfume.price}",
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 14.sp
+                    )
+                }
             }
 
             Icon(
@@ -258,7 +288,7 @@ fun PerfumeCardWithFavorite(
 fun SectionHeader(title: String) {
     Text(
         text = title,
-        color = Color.Black,
+        color = MaterialTheme.colorScheme.onBackground,
         fontSize = 22.sp,
         fontWeight = FontWeight.SemiBold,
         modifier = Modifier
@@ -274,15 +304,29 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
     val routes = listOf("home", "favorites", "cart", "profile")
 
     NavigationBar(
-        containerColor = Color.White,
-        modifier = modifier.fillMaxWidth().height(70.dp)
+        containerColor = MaterialTheme.colorScheme.surface,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(80.dp) // slightly increased height for better vertical centering
     ) {
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
         items.forEachIndexed { index, item ->
             NavigationBarItem(
-                icon = { Icon(icons[index], contentDescription = item) },
-                label = { Text(item) },
+                icon = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        Icon(
+                            imageVector = icons[index],
+                            contentDescription = item,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Text(text = item, fontSize = 12.sp)
+                    }
+                },
                 selected = currentRoute == routes[index],
                 onClick = {
                     navController.navigate(routes[index]) {
@@ -290,13 +334,15 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
                         launchSingleTop = true
                     }
                 },
+                alwaysShowLabel = true,
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color(0xFFF57C00),
-                    selectedTextColor = Color(0xFFF57C00),
-                    unselectedIconColor = Color.Gray,
-                    unselectedTextColor = Color.Gray
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.outline,
+                    unselectedTextColor = MaterialTheme.colorScheme.outline
                 )
             )
         }
     }
 }
+

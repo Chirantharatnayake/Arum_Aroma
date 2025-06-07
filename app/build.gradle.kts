@@ -55,6 +55,10 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation("androidx.compose.animation:animation:1.6.1") // or latest stable version
+
+
+
 
     // Material 3
     implementation(libs.androidx.material3)

@@ -1,14 +1,21 @@
 package com.example.loginpage.Screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -21,43 +28,48 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.loginpage.R
 import com.example.loginpage.data.DataSource
 import com.example.loginpage.data.FavoriteManager
 import com.example.loginpage.model.Perfume
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.delay
-import androidx.compose.foundation.isSystemInDarkTheme
-
 
 val StylishFont = FontFamily.Default
 
 @Composable
 fun HomePage(navController: NavController) {
+    // Load data
     val newArrivals = remember { DataSource().loadNewArrivals() }
     val discountedPerfumes = remember { DataSource().loadDiscountedPerfumes() }
     val banners = remember { DataSource().loadBanners() }
 
+    // Pager setup for rotating banners
     val pagerState = rememberPagerState(pageCount = { banners.size })
 
+    // Auto-scroll banner every 3 seconds
     LaunchedEffect(Unit) {
         while (true) {
             delay(3000)
             val nextPage = (pagerState.currentPage + 1) % banners.size
             pagerState.animateScrollToPage(nextPage, animationSpec = tween(600))
         }
+    }
+
+    // Animated Welcome Message setup
+    val visible = remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        visible.value = true
     }
 
     Box(
@@ -77,19 +89,32 @@ fun HomePage(navController: NavController) {
             ) {
                 Spacer(modifier = Modifier.height(12.dp))
 
+                // Load logo based on dark mode
                 val isDarkTheme = isSystemInDarkTheme()
                 val logoRes = if (isDarkTheme) R.drawable.whitelogo else R.drawable.blacklogo
 
+                // App logo and name
                 Image(
                     painter = painterResource(id = logoRes),
                     contentDescription = "Arum Aroma Logo",
                     modifier = Modifier.size(100.dp)
                 )
-                Text("Arum Aroma", fontSize = 36.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
-                Text("Essence of Elegance", fontSize = 14.sp, color = MaterialTheme.colorScheme.outline)
+                Text("Arum Aroma", style = MaterialTheme.typography.displaySmall, color = MaterialTheme.colorScheme.onBackground)
+                Text("Essence of Elegance", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
 
+                // Welcome animation
                 Spacer(modifier = Modifier.height(8.dp))
+                AnimatedVisibility(
+                    visible = visible.value,
+                    enter = fadeIn() + slideInVertically(),
+                    exit = fadeOut()
+                ) {
+                    Text("Welcome Back!", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+                }
 
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Search bar
                 BasicTextField(
                     value = "",
                     onValueChange = {},
@@ -98,14 +123,11 @@ fun HomePage(navController: NavController) {
                         .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
                         .padding(12.dp),
                     decorationBox = { innerTextField ->
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.outline)
                             Spacer(modifier = Modifier.width(8.dp))
                             Box {
-                                Text("Search...", color = MaterialTheme.colorScheme.outline, fontSize = 14.sp)
+                                Text("Search...", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
                                 innerTextField()
                             }
                         }
@@ -114,6 +136,7 @@ fun HomePage(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                // Banner pager with promotion and CTA
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier
@@ -141,17 +164,15 @@ fun HomePage(navController: NavController) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("Limited time!", fontSize = 12.sp, color = MaterialTheme.colorScheme.error)
-                                Text(title, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                                Text("Limited time!", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
+                                Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
                                 Text(subtitle, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Button(
-                                    onClick = {
-                                        navController.navigate("detail/${banner.perfumeId}")
-                                    },
+                                    onClick = { navController.navigate("detail/${banner.perfumeId}") },
                                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                                 ) {
-                                    Text("Claim", color = MaterialTheme.colorScheme.onPrimary)
+                                    Text("Claim", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onPrimary)
                                 }
                             }
                             Spacer(modifier = Modifier.width(12.dp))
@@ -166,28 +187,28 @@ fun HomePage(navController: NavController) {
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
+
+                // Homepage description text
                 Text(
                     text = stringResource(id = R.string.homepage_description),
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.outline
                 )
 
+                // Product sections
                 Spacer(modifier = Modifier.height(30.dp))
                 SectionHeader("New Arrivals")
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    items(newArrivals) { perfume ->
-                        PerfumeCardWithFavorite(perfume, navController)
-                    }
+                    items(newArrivals) { perfume -> PerfumeCardWithFavorite(perfume, navController) }
                 }
 
                 Spacer(modifier = Modifier.height(30.dp))
                 SectionHeader("Discounted Perfumes")
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    items(discountedPerfumes) { perfume ->
-                        PerfumeCardWithFavorite(perfume, navController)
-                    }
+                    items(discountedPerfumes) { perfume -> PerfumeCardWithFavorite(perfume, navController) }
                 }
 
+                // CTA button to order page
                 Spacer(modifier = Modifier.height(30.dp))
                 Button(
                     onClick = { navController.navigate("order") },
@@ -198,11 +219,12 @@ fun HomePage(navController: NavController) {
                 ) {
                     Icon(Icons.Default.ShoppingCart, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Shop Now", fontSize = 18.sp, color = MaterialTheme.colorScheme.onTertiary)
+                    Text("Shop Now", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onTertiary)
                 }
             }
         }
 
+        // Bottom Nav bar
         BottomNavigationBar(navController = navController, modifier = Modifier.align(Alignment.BottomCenter))
     }
 }
@@ -212,6 +234,7 @@ fun PerfumeCardWithFavorite(perfume: Perfume, navController: NavController) {
     val name = stringResource(id = perfume.nameResId)
     val isFav = remember { mutableStateOf(FavoriteManager.isFavorite(perfume.nameResId)) }
 
+    // Animate icon color and size based on favorite state
     val favColor by animateColorAsState(if (isFav.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline)
     val scale by animateFloatAsState(if (isFav.value) 1.2f else 1f)
 
@@ -232,6 +255,7 @@ fun PerfumeCardWithFavorite(perfume: Perfume, navController: NavController) {
                     .fillMaxSize()
                     .padding(12.dp)
             ) {
+                // Perfume image
                 Image(
                     painter = painterResource(id = perfume.imageResId),
                     contentDescription = name,
@@ -240,33 +264,21 @@ fun PerfumeCardWithFavorite(perfume: Perfume, navController: NavController) {
                         .padding(bottom = 10.dp),
                     contentScale = ContentScale.Crop
                 )
-                Text(name, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+
+                // Name & price
+                Text(name, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
 
                 if (perfume.originalPrice != null && perfume.originalPrice > perfume.price) {
-                    Text(
-                        text = "Rs. ${perfume.originalPrice}",
-                        color = MaterialTheme.colorScheme.outline,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
-                        style = androidx.compose.ui.text.TextStyle(textDecoration = TextDecoration.LineThrough)
-                    )
+                    // Show original + discounted price
+                    Text("Rs. ${perfume.originalPrice}", style = MaterialTheme.typography.labelSmall.copy(textDecoration = TextDecoration.LineThrough), color = MaterialTheme.colorScheme.outline)
                     Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = "Rs. ${perfume.price}",
-                        color = MaterialTheme.colorScheme.error,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("Rs. ${perfume.price}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
                 } else {
-                    Text(
-                        "Rs. ${perfume.price}",
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 14.sp
-                    )
+                    Text("Rs. ${perfume.price}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
                 }
             }
 
+            // Favorite toggle button
             Icon(
                 imageVector = if (isFav.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                 contentDescription = "Favorite",
@@ -303,28 +315,20 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
     val icons = listOf(Icons.Filled.Home, Icons.Filled.Favorite, Icons.Filled.ShoppingCart, Icons.Filled.Person)
     val routes = listOf("home", "favorites", "cart", "profile")
 
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surface,
         modifier = modifier
             .fillMaxWidth()
-            .height(80.dp) // slightly increased height for better vertical centering
+            .height(80.dp)
     ) {
-        val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxHeight()
-                    ) {
-                        Icon(
-                            imageVector = icons[index],
-                            contentDescription = item,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Text(text = item, fontSize = 12.sp)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(imageVector = icons[index], contentDescription = item, modifier = Modifier.size(24.dp))
+                        Text(text = item, style = MaterialTheme.typography.labelSmall)
                     }
                 },
                 selected = currentRoute == routes[index],
@@ -345,4 +349,3 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
         }
     }
 }
-

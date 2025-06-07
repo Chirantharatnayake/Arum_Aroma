@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -37,24 +38,33 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun OrderPage(navController: NavController) {
+    // Load perfume data and states
     val dataSource = remember { DataSource() }
     var selectedGender by remember { mutableStateOf("Men") }
-    var searchQuery by remember { mutableStateOf("") }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
 
+    // Load perfumes based on gender selection
     val perfumes = if (selectedGender == "Men") dataSource.loadMenPerfumes() else dataSource.loadWomenPerfumes()
+
+    // Filter perfumes by search query
     val filteredPerfumes = perfumes.filter {
-        stringResource(it.nameResId).contains(searchQuery, ignoreCase = true)
+        stringResource(it.nameResId).startsWith(searchQuery, ignoreCase = true)
     }
 
+    // Set card color depending on gender
     val cardColor = if (selectedGender == "Men") MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
+
+    // Load promotional banners
     val banners = remember { dataSource.loadBanners() }
     val pagerState = rememberPagerState(pageCount = { banners.size })
 
+    // Handle system top padding
     val view = LocalView.current
     val topInsetPadding = with(LocalDensity.current) {
         ViewCompat.getRootWindowInsets(view)?.systemGestureInsets?.top?.toDp() ?: 24.dp
     }
 
+    // Auto-scroll the banner every 7 seconds
     LaunchedEffect(Unit) {
         while (true) {
             delay(7000L)
@@ -63,7 +73,9 @@ fun OrderPage(navController: NavController) {
         }
     }
 
+    // Main layout container
     Box(modifier = Modifier.fillMaxSize()) {
+        // Scrollable content list
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,6 +84,7 @@ fun OrderPage(navController: NavController) {
                 .padding(top = topInsetPadding + 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            // Banner carousel
             item {
                 HorizontalPager(
                     state = pagerState,
@@ -100,11 +113,28 @@ fun OrderPage(navController: NavController) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("Limited time!", fontSize = 12.sp, color = MaterialTheme.colorScheme.error)
-                                Text(title, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
-                                Text(subtitle, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(
+                                    "Limited time!",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+
+                                Text(
+                                    title,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+
+                                Text(
+                                    subtitle,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+
                                 Spacer(modifier = Modifier.height(8.dp))
 
+                                // Show "Applied" or "Claim" button conditionally
                                 if (page == 0) {
                                     Text(
                                         text = "Applied",
@@ -117,13 +147,18 @@ fun OrderPage(navController: NavController) {
                                         onClick = { navController.navigate("detail/${banner.perfumeId}") },
                                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                                     ) {
-                                        Text("Claim", color = MaterialTheme.colorScheme.onPrimary)
+                                        Text(
+                                            "Claim",
+                                            style = MaterialTheme.typography.labelLarge,
+                                            color = MaterialTheme.colorScheme.onPrimary
+                                        )
                                     }
                                 }
                             }
 
                             Spacer(modifier = Modifier.width(12.dp))
 
+                            // Banner image
                             Image(
                                 painter = painterResource(id = imageRes),
                                 contentDescription = "Banner Image",
@@ -135,19 +170,23 @@ fun OrderPage(navController: NavController) {
                 }
             }
 
+            // Search bar
             item {
                 SearchBar(searchQuery) { searchQuery = it }
             }
 
+            // Gender toggle buttons
             item {
                 GenderToggle(selectedGender) { selectedGender = it }
             }
 
+            // Display filtered perfumes
             items(filteredPerfumes) { perfume ->
                 PerfumeCard(perfume = perfume, cardColor = cardColor, navController = navController)
             }
         }
 
+        // Bottom navigation bar
         BottomNavigationBar(
             navController = navController,
             modifier = Modifier.align(Alignment.BottomCenter)
@@ -157,6 +196,7 @@ fun OrderPage(navController: NavController) {
 
 @Composable
 fun SearchBar(value: String, onValueChange: (String) -> Unit) {
+    // Custom search bar with placeholder and icon
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
@@ -173,7 +213,11 @@ fun SearchBar(value: String, onValueChange: (String) -> Unit) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Box {
                     if (value.isBlank()) {
-                        Text("Search...", color = MaterialTheme.colorScheme.outline, fontSize = 14.sp)
+                        Text(
+                            "Search...",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.outline
+                        )
                     }
                     innerTextField()
                 }
@@ -184,6 +228,7 @@ fun SearchBar(value: String, onValueChange: (String) -> Unit) {
 
 @Composable
 fun GenderToggle(selectedGender: String, onGenderChange: (String) -> Unit) {
+    // Toggle buttons for switching between Men and Women perfumes
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -198,7 +243,11 @@ fun GenderToggle(selectedGender: String, onGenderChange: (String) -> Unit) {
                 ),
                 modifier = Modifier.padding(horizontal = 6.dp)
             ) {
-                Text("$gender's", color = MaterialTheme.colorScheme.onPrimary)
+                Text(
+                    "$gender's",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }
@@ -209,6 +258,7 @@ fun PerfumeCard(perfume: Perfume, cardColor: Color, navController: NavController
     val name = stringResource(perfume.nameResId)
     val isFavorite = FavoriteManager.isFavorite(perfume.nameResId)
 
+    // Individual perfume card layout
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -221,6 +271,7 @@ fun PerfumeCard(perfume: Perfume, cardColor: Color, navController: NavController
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(12.dp)
         ) {
+            // Perfume image
             Image(
                 painter = painterResource(id = perfume.imageResId),
                 contentDescription = name,
@@ -231,22 +282,26 @@ fun PerfumeCard(perfume: Perfume, cardColor: Color, navController: NavController
 
             Spacer(modifier = Modifier.width(16.dp))
 
+            // Perfume name and price
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     name,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onSurface
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold
                 )
+
                 Spacer(modifier = Modifier.height(4.dp))
+
                 Text(
                     text = "Rs. ${perfume.price}",
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Medium
                 )
             }
 
+            // Favorite button toggle
             IconButton(onClick = {
                 FavoriteManager.toggleFavorite(perfume.nameResId)
             }) {

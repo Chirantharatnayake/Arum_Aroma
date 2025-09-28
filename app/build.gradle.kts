@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.gms.google.services)
+
 }
 
 android {
@@ -44,6 +46,14 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.3" // or match your Compose version
     }
+
+    // Added to avoid duplicate asset case sensitivity clash (Perfumes.json vs perfumes.json)
+    packaging {
+        resources {
+            excludes += "Perfumes.json"
+            excludes += "assets/Perfumes.json"
+        }
+    }
 }
 
 dependencies {
@@ -71,6 +81,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
 
 
+
     // Optional: Extended icons (if you ever need icons like CreditCard, etc.)
     // implementation("androidx.compose.material:material-icons-extended:1.6.1")
 
@@ -80,6 +91,23 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    // new
+    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0")) // use a recent BoM
+
+
+
+
+
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

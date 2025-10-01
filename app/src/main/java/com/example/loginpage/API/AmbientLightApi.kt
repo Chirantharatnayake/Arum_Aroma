@@ -68,10 +68,10 @@ fun GlobalAmbientAlert(
                         currentZone = zone
                         AmbientLightState.lastZoneShown = zone
                         message = when (zone) {
-                            1 -> "🌙 Low light detected. Dark mode is recommended."
-                            2 -> "🌘 Dim light: lower brightness for comfort."
-                            3 -> "☀️ Bright light detected. Increase screen brightness."
-                            4 -> "🌞 Very bright light! Increase screen brightness."
+                            1 -> "Low light detected. Dark mode is recommended."
+                            2 -> "Dim light: lower brightness for comfort."
+                            3 -> "Bright light detected. Increase screen brightness."
+                            4 -> "Very bright light! Increase screen brightness."
                             else -> null
                         }
                         Log.d("AmbientLight", "Zone=$zone lux=$lux")

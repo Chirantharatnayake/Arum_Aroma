@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "892471832867",
+    "project_id": "perfumearoma-bcb9a",
+    "storage_bucket": "perfumearoma-bcb9a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:892471832867:android:24b4611857b934cf9e1c96",
+        "android_client_info": {
+          "package_name": "com.example.loginpage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKvtiFT_sWxQnwHr9tIaNQtkvTjZGW72o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

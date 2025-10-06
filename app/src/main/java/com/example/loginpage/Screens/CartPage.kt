@@ -30,6 +30,7 @@ import com.example.loginpage.model.Perfume
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import java.util.Locale
+import com.example.loginpage.util.rememberIsOnline
 
 @Composable
 fun CartScreen(navController: NavController) {
@@ -227,11 +228,13 @@ fun CartScreen(navController: NavController) {
                 )
 
                 // "Pay Now" button
+                val isOnline = rememberIsOnline()
+
                 Button(
                     onClick = {
                         navController.navigate("payment/$totalFormatted")
                     },
-                    enabled = !isEmpty,
+                    enabled = !isEmpty && isOnline,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
@@ -239,7 +242,7 @@ fun CartScreen(navController: NavController) {
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = "Pay Now",
+                        text = if (isOnline) "Pay Now" else "Offline - Pay Disabled",
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onTertiary
                     )

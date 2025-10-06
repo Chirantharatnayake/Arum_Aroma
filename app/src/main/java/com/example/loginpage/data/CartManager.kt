@@ -67,4 +67,11 @@ object CartManager {
         remoteCart.clear()
         persist()
     }
+
+    fun reloadForActiveUser() {
+        cart.clear()
+        remoteCart.clear()
+        restore()
+        Log.d(TAG, "Reloaded cart for active user; size=${cart.size}")
+    }
 }

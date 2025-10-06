@@ -48,73 +48,81 @@ object LocalStorage {
         }
     }
 
+    private fun activeUserKey(ctx: Context): String {
+        val email = prefs(ctx).getString(KEY_USER_EMAIL, null)?.takeIf { it.isNotBlank() }
+        val uname = prefs(ctx).getString(KEY_USER_NAME, null)?.takeIf { it.isNotBlank() }
+        val raw = email ?: uname ?: "guest"
+        return raw.lowercase().replace("[^a-z0-9@._-]".toRegex(), "_")
+    }
+    private fun scoped(base: String, ctx: Context) = base + "_" + activeUserKey(ctx)
+
     // -------- Favorites (resource id based) --------
     fun saveFavoriteIds(ctx: Context, ids: Collection<Int>) {
         val csv = ids.joinToString(",")
-        prefs(ctx).edit().putString(KEY_FAVORITES_IDS, csv).apply()
+        prefs(ctx).edit().putString(scoped(KEY_FAVORITES_IDS, ctx), csv).apply()
     }
 
     fun loadFavoriteIds(ctx: Context): Set<Int> {
-        val csv = prefs(ctx).getString(KEY_FAVORITES_IDS, null) ?: return emptySet()
+        val csv = prefs(ctx).getString(scoped(KEY_FAVORITES_IDS, ctx), null) ?: return emptySet()
         return csv.split(',').filter { it.isNotBlank() }.mapNotNull { it.toIntOrNull() }.toSet()
     }
 
     // -------- Favorites (remote keys) --------
     fun saveRemoteFavoriteKeys(ctx: Context, keys: Set<String>) {
-        prefs(ctx).edit().putStringSet(KEY_FAVORITES_REMOTE, keys).apply()
+        prefs(ctx).edit().putStringSet(scoped(KEY_FAVORITES_REMOTE, ctx), keys).apply()
     }
 
     fun loadRemoteFavoriteKeys(ctx: Context): Set<String> =
-        prefs(ctx).getStringSet(KEY_FAVORITES_REMOTE, emptySet()) ?: emptySet()
+        prefs(ctx).getStringSet(scoped(KEY_FAVORITES_REMOTE, ctx), emptySet()) ?: emptySet()
 
     // -------- Cart --------
     fun saveCartIds(ctx: Context, ids: Collection<Int>) {
         val csv = ids.joinToString(",")
-        prefs(ctx).edit().putString(KEY_CART_IDS, csv).apply()
+        prefs(ctx).edit().putString(scoped(KEY_CART_IDS, ctx), csv).apply()
     }
 
     fun loadCartIds(ctx: Context): List<Int> {
-        val csv = prefs(ctx).getString(KEY_CART_IDS, null) ?: return emptyList()
+        val csv = prefs(ctx).getString(scoped(KEY_CART_IDS, ctx), null) ?: return emptyList()
         return csv.split(',').filter { it.isNotBlank() }.mapNotNull { it.toIntOrNull() }
     }
 
     // -------- Ambient Light --------
     fun saveAmbientEnabled(ctx: Context, enabled: Boolean) {
-        prefs(ctx).edit().putBoolean(KEY_AMBIENT_ENABLED, enabled).apply()
+        prefs(ctx).edit().putBoolean(scoped(KEY_AMBIENT_ENABLED, ctx), enabled).apply()
     }
 
     fun loadAmbientEnabled(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(KEY_AMBIENT_ENABLED, false)
+        prefs(ctx).getBoolean(scoped(KEY_AMBIENT_ENABLED, ctx), false)
 
     fun saveAmbientRange(ctx: Context, id: String?) {
-        prefs(ctx).edit().putString(KEY_AMBIENT_RANGE, id).apply()
+        prefs(ctx).edit().putString(scoped(KEY_AMBIENT_RANGE, ctx), id).apply()
     }
 
     fun loadAmbientRange(ctx: Context): String? =
-        prefs(ctx).getString(KEY_AMBIENT_RANGE, null)
+        prefs(ctx).getString(scoped(KEY_AMBIENT_RANGE, ctx), null)
 
     // -------- Dark Mode Preference --------
     fun saveDarkModeEnabled(ctx: Context, enabled: Boolean) {
-        prefs(ctx).edit().putBoolean(KEY_DARK_MODE_ENABLED, enabled).apply()
+        prefs(ctx).edit().putBoolean(scoped(KEY_DARK_MODE_ENABLED, ctx), enabled).apply()
     }
 
     fun loadDarkModeEnabled(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(KEY_DARK_MODE_ENABLED, false)
+        prefs(ctx).getBoolean(scoped(KEY_DARK_MODE_ENABLED, ctx), false)
 
     // -------- Battery Alerts Preference --------
     fun saveBatteryAlertEnabled(ctx: Context, enabled: Boolean) {
-        prefs(ctx).edit().putBoolean(KEY_BATTERY_ALERT_ENABLED, enabled).apply()
+        prefs(ctx).edit().putBoolean(scoped(KEY_BATTERY_ALERT_ENABLED, ctx), enabled).apply()
     }
 
     fun loadBatteryAlertEnabled(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(KEY_BATTERY_ALERT_ENABLED, false)
+        prefs(ctx).getBoolean(scoped(KEY_BATTERY_ALERT_ENABLED, ctx), false)
 
     fun saveBatteryLastBucket(ctx: Context, bucket: Int) {
-        prefs(ctx).edit().putInt(KEY_BATTERY_LAST_BUCKET, bucket).apply()
+        prefs(ctx).edit().putInt(scoped(KEY_BATTERY_LAST_BUCKET, ctx), bucket).apply()
     }
 
     fun loadBatteryLastBucket(ctx: Context): Int =
-        prefs(ctx).getInt(KEY_BATTERY_LAST_BUCKET, -1)
+        prefs(ctx).getInt(scoped(KEY_BATTERY_LAST_BUCKET, ctx), -1)
 
     // -------- Basic User Profile --------
     fun saveUserProfile(ctx: Context, username: String?, email: String?) {
@@ -184,36 +192,35 @@ object LocalStorage {
     )
 
     fun saveSaveCardEnabled(ctx: Context, enabled: Boolean) {
-        prefs(ctx).edit().putBoolean(KEY_SAVE_CARD_ENABLED, enabled).apply()
+        prefs(ctx).edit().putBoolean(scoped(KEY_SAVE_CARD_ENABLED, ctx), enabled).apply()
     }
 
     fun loadSaveCardEnabled(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(KEY_SAVE_CARD_ENABLED, false)
+        prefs(ctx).getBoolean(scoped(KEY_SAVE_CARD_ENABLED, ctx), false)
 
     fun saveCardDetails(ctx: Context, name: String, numberFormatted: String, expiry: String, brand: String) {
-        // Never store CVV
         prefs(ctx).edit()
-            .putString(KEY_CARD_NAME, name)
-            .putString(KEY_CARD_NUMBER, numberFormatted)
-            .putString(KEY_CARD_EXPIRY, expiry)
-            .putString(KEY_CARD_BRAND, brand)
+            .putString(scoped(KEY_CARD_NAME, ctx), name)
+            .putString(scoped(KEY_CARD_NUMBER, ctx), numberFormatted)
+            .putString(scoped(KEY_CARD_EXPIRY, ctx), expiry)
+            .putString(scoped(KEY_CARD_BRAND, ctx), brand)
             .apply()
     }
 
     fun loadCardDetails(ctx: Context): SavedCard? {
-        val name = prefs(ctx).getString(KEY_CARD_NAME, null) ?: return null
-        val number = prefs(ctx).getString(KEY_CARD_NUMBER, null) ?: return null
-        val expiry = prefs(ctx).getString(KEY_CARD_EXPIRY, null) ?: return null
-        val brand = prefs(ctx).getString(KEY_CARD_BRAND, null) ?: "CARD"
+        val name = prefs(ctx).getString(scoped(KEY_CARD_NAME, ctx), null) ?: return null
+        val number = prefs(ctx).getString(scoped(KEY_CARD_NUMBER, ctx), null) ?: return null
+        val expiry = prefs(ctx).getString(scoped(KEY_CARD_EXPIRY, ctx), null) ?: return null
+        val brand = prefs(ctx).getString(scoped(KEY_CARD_BRAND, ctx), null) ?: "CARD"
         return SavedCard(name = name, number = number, expiry = expiry, brand = brand)
     }
 
     fun clearSavedCard(ctx: Context) {
         prefs(ctx).edit()
-            .remove(KEY_CARD_NAME)
-            .remove(KEY_CARD_NUMBER)
-            .remove(KEY_CARD_EXPIRY)
-            .remove(KEY_CARD_BRAND)
+            .remove(scoped(KEY_CARD_NAME, ctx))
+            .remove(scoped(KEY_CARD_NUMBER, ctx))
+            .remove(scoped(KEY_CARD_EXPIRY, ctx))
+            .remove(scoped(KEY_CARD_BRAND, ctx))
             .apply()
     }
 }

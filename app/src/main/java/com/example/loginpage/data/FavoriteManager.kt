@@ -53,4 +53,12 @@ object FavoriteManager {
 
     fun getAllFavoriteKeys(context: Context): Set<String> =
         LocalStorage.loadRemoteFavoriteKeys(context.applicationContext)
+
+    fun reloadForActiveUser() {
+        val ctx = appContext ?: return
+        val stored = LocalStorage.loadFavoriteIds(ctx)
+        favoritePerfumes.clear()
+        favoritePerfumes.addAll(stored)
+        Log.d(TAG, "Reloaded favorites for active user; count=${stored.size}")
+    }
 }

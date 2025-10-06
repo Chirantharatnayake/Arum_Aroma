@@ -31,7 +31,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.loginpage.R
+import com.example.loginpage.data.CartManager
 import com.example.loginpage.data.FirebaseManager
+import com.example.loginpage.data.FavoriteManager
 import com.example.loginpage.data.LocalStorage
 import com.example.loginpage.ui.theme.accentOrangeLight
 
@@ -166,6 +168,9 @@ fun LoginPage(
                             FirebaseManager.loadCurrentUserProfile { username, emailFromDb ->
                                 username?.let { LocalStorage.saveUserName(context, it) }
                                 emailFromDb?.let { LocalStorage.saveUserEmail(context, it) }
+                                // Reload user‑scoped state (cart & favorites) now that identity is set
+                                CartManager.reloadForActiveUser()
+                                FavoriteManager.reloadForActiveUser()
                                 Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
                                 onLoginSuccess()
                             }

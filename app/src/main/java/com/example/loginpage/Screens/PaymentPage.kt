@@ -242,6 +242,15 @@ fun PaymentScreen(navController: NavController, amount: Double) {
             Spacer(Modifier.height(30.dp))
             Button(
                 onClick = {
+                    // New expiry year >= 2025 validation (YY >= 25)
+                    if (expiryRegex.matches(expiry)) {
+                        val yearPart = expiry.substringAfter('/') // YY
+                        val yearNum = yearPart.toIntOrNull()
+                        if (yearNum != null && yearNum < 25) {
+                            Toast.makeText(context, "Card expired", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        }
+                    }
                     focus.clearFocus()
                     processing = true
                     scope.launch {

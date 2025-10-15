@@ -164,6 +164,16 @@ fun ProfileScreen(navController: NavController) {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 AssistChip(onClick = controller.captureFromCamera, label = { Text("Camera") })
                 AssistChip(onClick = controller.pickFromGallery, label = { Text("Gallery") })
+                // New: Remove profile picture option
+                AssistChip(
+                    onClick = {
+                        LocalStorage.clearProfileBitmap(context)
+                        controller.clear()
+                        profileImage = null
+                        Toast.makeText(context, "Profile photo removed", Toast.LENGTH_SHORT).show()
+                    },
+                    label = { Text("Remove") }
+                )
             }
 
             // Moved: Username, email, and stats right after the photo and chips

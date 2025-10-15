@@ -22,6 +22,8 @@ class ProfileImageController internal constructor(
     val pickFromGallery: () -> Unit
 ) {
     val image: ImageBitmap? get() = _image.value
+    // Added: allow clearing the selected image programmatically
+    fun clear() { _image.value = null }
 }
 
 @Composable

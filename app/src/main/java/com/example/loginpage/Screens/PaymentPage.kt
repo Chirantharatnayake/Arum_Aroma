@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -139,10 +140,13 @@ fun PaymentScreen(navController: NavController, amount: Double) {
 
             Spacer(Modifier.height(22.dp))
 
-            // Name
+            // Name (letters and spaces only)
             OutlinedTextField(
                 value = nameOnCard,
-                onValueChange = { nameOnCard = it.uppercase() },
+                onValueChange = { raw ->
+                    val cleaned = raw.filter { ch -> ch.isLetter() || ch.isWhitespace() }
+                    nameOnCard = cleaned.uppercase()
+                },
                 label = { Text("Name on card") },
                 singleLine = true,
                 isError = nameError,
@@ -150,7 +154,11 @@ fun PaymentScreen(navController: NavController, amount: Double) {
                     if (nameError) Text("Min 3 chars", color = cs.error, fontSize = 11.sp)
                 },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    capitalization = KeyboardCapitalization.Words,
+                    imeAction = ImeAction.Next
+                )
             )
             Spacer(Modifier.height(14.dp))
 
